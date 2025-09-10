@@ -13,6 +13,12 @@ The code is only available for the partners until the release in March 2026. It 
 
 [👉 Click here to register your interest in the form. (Note: Registering is not a commitment but will enroll you in our process.)](https://docs.google.com/forms/d/e/1FAIpQLSd2H7bbL_duBTMhHzjw7W52H9XXAiJ9A3sL7PsrfCTW_bNUhw/viewform)
 
+[👉 Demo using the implmented components](https://openbridge-jip-demo.web.app/).
+
+[👉 Currently implemented components](https://openbridge-jip-storybook.web.app).
+
+
+
 > **❗Caution❗** This repository is currently in early development and may not be stable. Please use with caution.
 
 # Discord server
@@ -39,11 +45,11 @@ We have made an short introduction to the library. You can watch it [here](https
 
 ## Storybook
 
-[Storybook](https://openbridge-storybook.web.app) is a development environment for UI components. It allows you to browse a component library, view the different states of each component, and interactively develop and test components in isolation.
+[Storybook](https://openbridge-jip-storybook.web.app) is a development environment for UI components. It allows you to browse a component library, view the different states of each component, and interactively develop and test components in isolation.
 
 ## Demo
 
-[The demo](https://openbridge-demo.web.app/) showcases the project's functionality using Vue.js. It provides a live demonstration of the project's features and allows you to interact with the application.
+[The demo](https://openbridge-jip-demo.web.app/) showcases the project's functionality using Vue.js. It provides a live demonstration of the project's features and allows you to interact with the application.
 
 ## CSS file for palettes
 
