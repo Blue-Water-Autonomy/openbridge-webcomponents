@@ -6455,13 +6455,13 @@
 }
 
 @property --alarm-blink-on {
-  syntax: "number";
+  syntax: "<number>";
   inherits: true;
   initial-value: 1;
 }
 
 @property --alarm-blink-off {
-  syntax: "number";
+  syntax: "<number>";
   inherits: true;
   initial-value: 0;
 }
@@ -6498,13 +6498,13 @@
 }
 
 @property --warning-blink-on {
-  syntax: "number";
+  syntax: "<number>";
   inherits: true;
   initial-value: 1;
 }
 
 @property --warning-blink-off {
-  syntax: "number";
+  syntax: "<number>";
   inherits: true;
   initial-value: 0;
 }
