@@ -1,4 +1,4 @@
-name: Publish to NPM
+name: Publish to GitHub Packages
 
 on:
   push:
@@ -8,6 +8,9 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
     steps:
       - name: Checkout code
@@ -17,37 +20,22 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "20" # Specify your Node.js version
-          registry-url: "https://registry.npmjs.org"
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@blue-water-autonomy"
 
       - name: Install dependencies
         run: npm install
 
-      - name: Append timestamp to version
+      - name: Set package name/version
         working-directory: ./packages/openbridge-webcomponents
         run: |
-          TIMESTAMP=$(date +"%Y%m%d%H%M%S")
-          npm version $(node -p "require('./package.json').version + '-dev-${TIMESTAMP}'") --no-git-tag-version
+          npm pkg set name="@blue-water-autonomy/openbridge-webcomponents"
+          base=$(node -p "require('./package.json').version.split('-')[0]")
+          version="${base}-bwa.${GITHUB_RUN_NUMBER}"
+          npm pkg set version="$version"
 
-      - name: Publish to NPM
+      - name: Publish to GitHub Packages
         working-directory: ./packages/openbridge-webcomponents
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --access public --tag dev
-
-      - name: Publish react wrapper
-        working-directory: ./packages/openbridge-webcomponents-react
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          rm -r node_modules/@oicl
-          npm run build
-          npm publish --access public --tag dev
-
-      - name: Publish vue wrapper
-        working-directory: ./packages/openbridge-webcomponents-vue
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          rm -r node_modules/@oicl
-          npm run build
-          npm publish --access public --tag dev
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm publish --access=restricted
