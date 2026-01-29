@@ -1,3 +1,6 @@
+> [!NOTE]
+> This repository is a fork of the upstream [Ocean-Industries-Concept-Lab/openbridge-webcomponents](https://github.com/Ocean-Industries-Concept-Lab/openbridge-webcomponents).
+
 # Openbridge Web Components
 
 [![discord, join chat](https://img.shields.io/badge/discord-join_chat-brightgreen.svg?logo=discord&labelColor=white&style=flat&color=%235865F2)](https://discord.gg/wSCPxPH3RJ)
@@ -16,8 +19,6 @@ The code is only available for the partners until the release in March 2026. It 
 [👉 Demo using the implmented components](https://openbridge-jip-demo.web.app/).
 
 [👉 Currently implemented components](https://openbridge-jip-storybook.web.app).
-
-
 
 > **❗Caution❗** This repository is currently in early development and may not be stable. Please use with caution.
 
