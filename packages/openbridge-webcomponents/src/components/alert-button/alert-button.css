@@ -40,6 +40,14 @@ button {
     padding-left: 0;
   }
 
+  &.type-alarm,
+  &.type-alarm-off,
+  &.type-warning,
+  &.type-warning-off {
+    animation: warning-blink 4s infinite;
+    animation-timing-function: steps(1);
+  }
+
   & .icon {
     width: var(--app-components-alert-button-icon-size);
     height: var(--app-components-alert-button-icon-size);

@@ -6509,8 +6509,3 @@
   initial-value: 0;
 }
 
-:root {
-  animation: warning-blink 4s infinite;
-  animation-timing-function: steps(1);
-}
-

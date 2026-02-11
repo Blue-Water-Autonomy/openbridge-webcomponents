@@ -47,6 +47,8 @@ export class ObcAlertIcon extends LitElement {
       height: 100%;
       width: 100%;
       position: relative;
+      animation: warning-blink 4s infinite;
+      animation-timing-function: steps(1);
     }
     .wrapper svg {
       height: 100%;
