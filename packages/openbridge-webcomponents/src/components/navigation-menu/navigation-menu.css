@@ -1,9 +1,10 @@
 .wrapper {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     height: 100%;
     width: 320px;
+    overflow-y: auto;
 
     background: var(--container-global-color, #FCFCFC);
 
