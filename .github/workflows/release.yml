@@ -1,59 +1,44 @@
-name: Release
+name: Publish to GitHub Packages
 
 on:
   push:
     branches:
-      - develop
+      - blue-water-autonomy
   workflow_dispatch:
-
-permissions:
-  contents: write
-  issues: write
-  pull-requests: write
-  id-token: write
 
 jobs:
   release:
-    name: Release
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/stable' || github.ref == 'refs/heads/develop'
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-          persist-credentials: false
+    permissions:
+      contents: read
+      packages: write
 
-      - name: Setup Node.js
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
           node-version: "24"
-          registry-url: "https://registry.npmjs.org/"
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@blue-water-autonomy"
           cache: "npm"
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Build core and generate wrappers
+      - name: Set package name/version/repo
         working-directory: ./packages/openbridge-webcomponents
-        run: npm run build:full
+        run: |
+          npm pkg set name="@blue-water-autonomy/openbridge-webcomponents"
+          npm pkg set repository.url="git+https://github.com/Blue-Water-Autonomy/openbridge-webcomponents.git"
+          base=$(node -p "require('./package.json').version.split('-')[0]")
+          version="${base}-bwa.${GITHUB_RUN_NUMBER}"
+          npm pkg set version="$version"
 
-      - name: Install wrapper dependencies
-        run: npm install
-
-      - name: Build Angular wrapper
-        working-directory: ./packages/openbridge-webcomponents-ng
-        run: npm run build
-
-      - name: Generate GitHub App token
-        id: app-token
-        uses: actions/create-github-app-token@v1
-        with:
-          app-id: ${{ secrets.APP_ID }}
-          private-key: ${{ secrets.APP_PRIVATE_KEY }}
-
-      - name: Release
+      - name: Publish to GitHub Packages
+        working-directory: ./packages/openbridge-webcomponents
         env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-          NPM_CONFIG_PROVENANCE: "true"
-        run: npx semantic-release
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm publish --tag latest
