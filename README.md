@@ -1,3 +1,6 @@
+> [!NOTE]
+> This repository is a fork of the upstream [Ocean-Industries-Concept-Lab/openbridge-webcomponents](https://github.com/Ocean-Industries-Concept-Lab/openbridge-webcomponents).
+
 # Openbridge Web Components
 
 This monorepo contains the OpenBridge design system implemented as web components.
