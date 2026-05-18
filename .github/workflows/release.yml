@@ -1,17 +1,29 @@
-name: Publish to GitHub Packages
+name: Publish to GAR
 
+# Publishing is triggered by pushing a `bwa-v*` tag. AI-920's applied WIF
+# attribute_condition pins this repo (publisher) to refs/heads/main OR
+# refs/tags/* — origin has no `main`, so a tag push is the only trigger that
+# satisfies the OIDC exchange without an infra change. The glob is scoped to
+# `bwa-v*` (a BWA-distinct prefix, matching html-eslint / AI-917) so a publish
+# is NOT triggered by upstream `v*` tags or by bob run-artifact tags such as
+# `agentic/meta/agentic/AI-916/r0XXXX`; `bwa-v*` is still under refs/tags/* so
+# WIF continues to allow it. The tag name is only the trigger gate — the
+# published version is derived from package.json (2.0.0-bwa.${run}), not the
+# tag. workflow_dispatch is kept for manual runs but only authenticates when
+# dispatched against a tag ref (a dispatch from a branch fails at the WIF
+# step, as expected).
 on:
   push:
-    branches:
-      - blue-water-autonomy
-  workflow_dispatch:
+    tags:
+      - "bwa-v*"
+  workflow_dispatch: {}
 
 jobs:
   release:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write
+      id-token: write # required for the WIF OIDC exchange
 
     steps:
       - name: Checkout code
@@ -21,9 +33,16 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: "24"
-          registry-url: "https://npm.pkg.github.com"
-          scope: "@blue-water-autonomy"
           cache: "npm"
+
+      - name: Authenticate to Google Cloud (direct WIF)
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/1066481849278/locations/global/workloadIdentityPools/github-actions/providers/github-oidc-bwa-npm
+          # NO service_account — direct WIF (smoke-verified on AI-920)
+
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v2
 
       - name: Install dependencies
         run: npm ci
@@ -37,8 +56,13 @@ jobs:
           version="${base}-bwa.${GITHUB_RUN_NUMBER}"
           npm pkg set version="$version"
 
-      - name: Publish to GitHub Packages
+      - name: Publish to GAR
         working-directory: ./packages/openbridge-webcomponents
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm publish --tag latest
+        run: |
+          token="$(gcloud auth print-access-token)"
+          {
+            echo "@blue-water-autonomy:registry=https://us-central1-npm.pkg.dev/blue-water-autonomy-operations/bwa-npm/"
+            echo "//us-central1-npm.pkg.dev/blue-water-autonomy-operations/bwa-npm/:_authToken=${token}"
+            echo "//us-central1-npm.pkg.dev/blue-water-autonomy-operations/bwa-npm/:always-auth=true"
+          } > .npmrc
+          npm publish --tag latest
